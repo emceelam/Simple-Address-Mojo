@@ -27,12 +27,6 @@
     </div>
     <div class='container-fluid'>
       <h1>Simple Address App</h1>
-      <p>jQuery version</p>
-      <div id="div1">
-      </div>
-      <div>
-        <button class="btn btn-primary" id="button1">Button 1</button>
-      </div>
       <div class="row">
         <div class="col-4">
           <button type="button" class="btn btn-primary" style="float:right"
@@ -153,8 +147,6 @@
         }
         promise_put (address) {
           var id = address["id"];
-          console.log("promise_put");
-          console.log(address);
           return new Promise ( (resolve) => {
             $.ajax({
               type: "PUT",
@@ -207,7 +199,6 @@
 
           ajax_address.promise_get_all().then(
             function (addresses) {
-              console.log (`row count received: ${addresses.length}`);
               $("#list_addresses").html("");  // reset
 
               if (!Array.isArray(addresses)) {
@@ -268,7 +259,6 @@
         delete_address (id) {
           var this_obj = this;
           this.ajax_address.promise_delete(id).then(function () {
-            console.log(`#delete_${id} success`);
             $(`#address_${id}`).remove();
             delete this_obj.id_to_address[id];
             address_map.delete_marker(id);
@@ -276,7 +266,6 @@
         }
 
         edit_address (id) {
-          console.log(`edit ${id}`);
           var this_obj = this;
 
           var address = this.id_to_address[id];
@@ -302,8 +291,6 @@
           addr_data.zip    = $("#zip"   ).val();
 
           this.ajax_address.promise_post(addr_data).then( (address) => {
-            console.log("post successful");
-            console.log(address);
             var id = address["id"];
             this_obj.append(address);
             this_obj.add_marker(id, address);
@@ -337,7 +324,6 @@
 
           this.ajax_address.promise_geocode(address).then(
             function(lat_lng) {
-              console.log(lat_lng);
               address["lat"] = lat_lng["lat"];
               address["lng"] = lat_lng["lng"];
               address_map.add_marker(id, address);
@@ -384,8 +370,6 @@
           var street = address["street"];
           var lat    = address["lat"   ];
           var lng    = address["lng"   ];
-          console.log("add_marker");
-          console.log(address);
 
           var marker = new google.maps.Marker({
             title     : street,
@@ -394,10 +378,8 @@
             map       : this.map,
           });
           this.id_to_marker[id] = marker;
-          console.log(marker);
         }
         delete_marker(id) {
-          console.log(`delete_marker ${id}`);
           var marker = this.id_to_marker[id];
           marker.setMap(null);
           delete this.id_to_marker[id];
@@ -427,36 +409,6 @@
           $("#save_address").off().click(function () {
             list_addresses.post_address();
             //$("form_modal").close();
-          });
-        });
-
-        $("#button1").click(function() {
-          /*
-        $.ajax({
-              type: "GET",
-              url: "http://127.0.0.1:3000/api/addresses",
-              success: resolve,
-              error: this.reject
-            });
-          */
-          street = encodeURI("550 E Brokaw Rd");
-          city   = encodeURI("San Jose");
-          state  = encodeURI("CA");
-          zip    = 95112;
-          $.ajax({
-            type: "GET",
-            url: `http://127.0.0.1:3000/api/geocode?street=${street}&city=${city}&state=${state}&zip=${zip}`,
-            success: function(lat_lng) {
-              console.log(lat_lng);
-              var marker = new google.maps.Marker({
-                position: lat_lng,
-              });
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-              console.log (
-                `ajax failed: ${textStatus}, ${errorThrown}, ${jqXHR.responseText}`
-              );
-            }
           });
         });
       });
