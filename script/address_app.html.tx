@@ -318,7 +318,12 @@
 
         add_marker (id, address) {
           if (address["lat"] || address["lng"]) {
-            address_map.add_marker(id, address);
+            setTimeout(
+              function() {
+                address_map.add_marker(id, address);
+              },
+              Math.floor(Math.random() * 1000)
+            );
             return;
           }
 
