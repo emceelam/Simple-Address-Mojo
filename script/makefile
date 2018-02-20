@@ -2,9 +2,17 @@
 # $<  first dependency 
 # $^  all dependencies
 
-all:
+all: address_app.html address.db
+
+address_app.html: xslate.pl address_app.html.tx
+	./xslate.pl > $@
+	cp address_app.html ../public/$@
+
+address.db:
+	sqlite3 $@ < create.sql
 
 clean:
-	sqlite3 address.db < create.sql
-
+	rm address.db
+	rm address_app.html
+	rm ../public/address_app.html
 

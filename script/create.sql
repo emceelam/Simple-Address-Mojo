@@ -1,5 +1,5 @@
 /* SQLITE3 */
-DROP TABLE addresses;
+DROP TABLE IF EXISTS addresses;
 CREATE TABLE IF NOT EXISTS addresses (
   id     INTEGER PRIMARY KEY ASC,
   street TEXT,

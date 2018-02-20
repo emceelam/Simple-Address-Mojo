@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Simple Address App</title>
+    <meta charset=utf-8 />    
+    <meta name="viewport" 
+      content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="css/master.css" />
+    <link rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
+      crossorigin="anonymous">
+    <style>
+      #gmap {
+        width:100%;
+        height:400px;
+        border:thin solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" >
+      <div id="form_div" class="col-md-6 d-none fixed-top border rounded"
+        style="background-color:white">
+      </div>
+    </div>
+    <div class='container-fluid'>
+      <h1>Simple Address App</h1>
+      <p>jQuery version</p>
+      <div id="div1">
+      </div>
+      <div>
+        <button class="btn btn-primary" id="button1">Button 1</button>
+      </div>
+      <div class="row">
+        <div class="col-4">
+          <button type="button" class="btn btn-primary" style="float:right"
+            data-toggle="modal" data-target="#form_modal" data-whatever="New Address"
+            id="new_address">
+            New Address
+          </button>
+          <h3>Current addresses</h3>
+          <ul class="list-group" id="list_addresses">
+          </ul>
+        </div>
+        <div class="col-8">
+          <div id="gmap">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="form_modal" tabindex="-1" role="dialog" 
+      aria-labeledby="address_title" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="address_title">Address</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="street">Street</label>
+                <input type="text" class="form-control" id="street" name="street"
+                      placeholder="Street">
+              </div>
+              <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" class="form-control" id="city" name="city"
+                      placeholder="City">
+              </div>
+              <div class="form-group">
+                <label for="state">State</label>
+                <input type="text" class="form-control" id="state" name="state"
+                      placeholder="State" placeholder="CA">
+              </div>
+              <div class="form-group">
+                <label for="zip">Zip</label>
+                <input type="text" class="form-control" id="zip" name="zip"
+                      placeholder="Zip">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Cancel
+            </button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal"
+              id="save_address">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script 
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+    <script 
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" 
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" 
+      crossorigin="anonymous"></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" 
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" 
+      crossorigin="anonymous"></script>
+    
+    <script>
+
+      class AjaxAddress {
+        promise_get_all () {
+          return new Promise( (resolve) => {
+            $.ajax({
+              type: "GET",
+              url: "http://127.0.0.1:3000/api/addresses",
+              success: resolve,
+              error: this.reject
+            });
+          })
+        }
+        promise_delete (id) {
+          return new Promise ( (resolve) => {
+            $.ajax({
+              type: "DELETE",
+              url: `http://127.0.0.1:3000/api/addresses/${id}`,
+              xhrFields: {
+                withCredentials: true
+              },
+              success: resolve,
+              error: this.reject
+            });
+          });
+        }
+        promise_post (addr_data) {
+          return new Promise ( (resolve) => {
+            $.ajax({
+              type: "POST",
+              url: "http://127.0.0.1:3000/api/addresses",
+              xhrFields: {
+                withCredentials: true
+              },
+              data : JSON.stringify(addr_data),
+              headers: {
+                "Content-Type" : "application/json",
+              },
+              dataType: "json",
+              success: resolve,
+              error: this.reject
+            });
+          });
+        }
+        promise_put (address) {
+          var id = address["id"];
+          console.log("promise_put");
+          console.log(address);
+          return new Promise ( (resolve) => {
+            $.ajax({
+              type: "PUT",
+              url: `http://127.0.0.1:3000/api/addresses/${id}`,
+              xhrFields: {
+                withCredentials: true
+              },
+              data: JSON.stringify(address),
+              headers: {
+                "Content-Type" : "application/json",
+              },
+              dataType: "json",
+              success: resolve,
+              error: this.reject
+            });
+          });
+        }
+ 
+ 
+        promise_geocode (address) {
+          street = encodeURI(address["street"]);
+          city   = encodeURI(address["city"]);
+          state  = encodeURI(address["state"]);
+          zip    = encodeURI(address["zip"]);
+          return new Promise ( (resolve) => {
+            $.ajax({
+              type: "GET",
+              url: `http://127.0.0.1:3000/api/geocode?street=${street}&city=${city}&state=${state}&zip=${zip}`,
+              success: resolve,
+              error: this.reject
+            });
+          });
+        }
+
+        // error function for failed AJAX call
+        reject (jqXHR, textStatus, errorThrown) {
+          console.log (
+            `ajax failed: ${textStatus}, ${errorThrown}, ${jqXHR.responseText}`
+          );
+        }
+      }
+      
+      
+      class ListAddresses  {
+        constructor () {
+          this.id_to_address = {};
+          this.ajax_address = new AjaxAddress();
+        }
+        refresh() {
+          var this_obj = this;
+          var ajax_address = this.ajax_address;
+
+          ajax_address.promise_get_all().then(
+            function (addresses) {
+              console.log (`row count received: ${addresses.length}`);
+              $("#list_addresses").html("");  // reset
+
+              if (!Array.isArray(addresses)) {
+                addresses = new Array();
+              }
+
+              var id_to_address = {};
+              addresses.forEach ( (address) => {
+                var id = address["id"];
+                this_obj.add_marker(id, address);
+                this_obj.append(address);
+              });
+            }
+          );
+        }
+        
+        append (address) {
+          var id = address["id"];
+
+          // no need to append. it's already there.
+          if (this.id_to_address[id]) {
+            return;
+          }
+
+          this.id_to_address[id] = address;
+          var address_content = make_address_content(address);       
+          $("#list_addresses").append(
+            `
+            <li class='list-group-item' id='address_${id}'>
+              <div class='btn-group' role='group'
+                aria-label='edit_delete' style='float:right'>
+                <button type="button" class='btn btn-outline-secondary'
+                  data-target="form_modal" data-whatever="Edit Address"
+                  id='edit_${id}'>
+                  Edit
+                </button>
+                <button type="button" class='btn btn-outline-secondary'
+                  id='delete_${id}' >
+                  Delete
+                </button>
+              </div>
+              <div id='address_content_${id}'>
+                ${address_content}
+              </div>
+            </li>
+            `
+          );
+
+          var this_obj = this;
+          $(`#edit_${id}`).click(function() {
+            this_obj.edit_address(id);
+          });
+          $(`#delete_${id}`).click(function() {
+            this_obj.delete_address(id);
+          });
+        }
+
+        delete_address (id) {
+          var this_obj = this;
+          this.ajax_address.promise_delete(id).then(function () {
+            console.log(`#delete_${id} success`);
+            $(`#address_${id}`).remove();
+            delete this_obj.id_to_address[id];
+            address_map.delete_marker(id);
+          });
+        }
+
+        edit_address (id) {
+          console.log(`edit ${id}`);
+          var this_obj = this;
+
+          var address = this.id_to_address[id];
+          $("#street").val(address["street"]);
+          $("#city"  ).val(address["city"  ]);
+          $("#state" ).val(address["state" ]);
+          $("#zip"   ).val(address["zip"   ]);
+
+          $("#address_title").text("Edit Address");
+          //$("#form_modal").data("newness",0);
+          $("#form_modal").modal("show");
+          $("#save_address").off().click(function () {
+            this_obj.put_address(id);
+          });
+        }
+
+        post_address() {
+          var this_obj = this;
+          var addr_data = new Object;
+          addr_data.street = $("#street").val();
+          addr_data.city   = $("#city"  ).val();
+          addr_data.state  = $("#state" ).val();
+          addr_data.zip    = $("#zip"   ).val();
+          
+          this.ajax_address.promise_post(addr_data).then( (address) => {
+            console.log("post successful");
+            console.log(address);
+            var id = address["id"];
+            this_obj.append(address);
+            this_obj.add_marker(id, address);
+          });
+        }
+
+        put_address(id) {
+          var address = {
+            street: $("#street").val(),
+            city  : $("#city"  ).val(),
+            state : $("#state" ).val(),
+            zip   : $("#zip"   ).val(),
+            id    : id
+          };
+          this.delete_marker(id);
+
+          var this_obj = this;
+          this.ajax_address.promise_put(address).then( () => {
+            var content = make_address_content(address);
+            $(`#address_content_${id}`).html(content);
+            this_obj.id_to_address[id] = address;
+            this_obj.add_marker(id, address);
+          });
+        }
+        
+        add_marker (id, address) {
+          if (address["lat"] || address["lng"]) {
+            address_map.add_marker(id, address);
+            return;
+          }
+
+          this.ajax_address.promise_geocode(address).then(
+            function(lat_lng) {
+              console.log(lat_lng);
+              address["lat"] = lat_lng["lat"];
+              address["lng"] = lat_lng["lng"];
+              address_map.add_marker(id, address);
+            },
+          );
+        }
+        delete_marker (id) {
+          address_map.delete_marker(id);
+        }
+      };
+
+      function escape_html (str) {
+        str += "";  // force to string
+        return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      function make_address_content(address) {
+        var street = escape_html(address["street"]);
+        var city   = escape_html(address["city"  ]);
+        var state  = escape_html(address["state" ]);
+        var zip    = escape_html(address["zip"   ]);
+
+        return `
+          ${street}<br>
+          ${city}, ${state} ${zip}
+        `;
+      }
+      
+      class AddressMap {
+        constructor() {
+          this.id_to_marker = {};
+          this.map = null;
+        }
+        init() {
+          this.map = new google.maps.Map(
+            document.getElementById("gmap"),
+            {
+              zoom: 10,
+              center: {lat: 37.4230750, lng: -121.8818120},
+            }
+          );
+        }
+        add_marker(id, address) {
+          var street = address["street"];
+          var lat    = address["lat"   ];
+          var lng    = address["lng"   ];
+          console.log("add_marker");
+          console.log(address);
+          
+          var marker = new google.maps.Marker({
+            title     : street,
+            position  : {'lat': lat, 'lng': lng},
+            animation : google.maps.Animation.DROP,
+            map       : this.map,
+          });
+          this.id_to_marker[id] = marker;
+          console.log(marker);
+        }
+        delete_marker(id) {
+          console.log(`delete_marker ${id}`);
+          var marker = this.id_to_marker[id];
+          marker.setMap(null);
+          delete this.id_to_marker[id];
+        }
+      }
+      address_map = null;
+
+      function initMap() {
+        address_map = new AddressMap;
+        address_map.init();
+      }
+
+      $(document).ready(function() {
+        list_addresses = new ListAddresses;
+        list_addresses.refresh();
+        
+        $("#new_address").click(function() {
+          $("#address_title").text("New Address");
+          //$("#form_modal").data("newness",1);
+
+          // reset form values
+          $("#street").val('');
+          $("#city"  ).val('');
+          $("#state" ).val('CA');
+          $("#zip"   ).val('');
+
+          $("#save_address").off().click(function () {
+            list_addresses.post_address();
+            //$("form_modal").close();
+          });
+        });
+        
+        $("#button1").click(function() {
+          /*
+        $.ajax({
+              type: "GET",
+              url: "http://127.0.0.1:3000/api/addresses",
+              success: resolve,
+              error: this.reject
+            });
+          */
+          street = encodeURI("550 E Brokaw Rd");
+          city   = encodeURI("San Jose");
+          state  = encodeURI("CA");
+          zip    = 95112;
+          $.ajax({
+            type: "GET",
+            url: `http://127.0.0.1:3000/api/geocode?street=${street}&city=${city}&state=${state}&zip=${zip}`,
+            success: function(lat_lng) {
+              console.log(lat_lng);
+              var marker = new google.maps.Marker({
+                position: lat_lng,
+                
+              });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.log (
+                `ajax failed: ${textStatus}, ${errorThrown}, ${jqXHR.responseText}`
+              );
+            }
+          });
+        });
+        
+      });
+    </script>
+    <script async defer 
+      src="https://maps.googleapis.com/maps/api/js?key=<: $api_key :>&callback=initMap"
+      type="text/javascript">
+    </script>
+  </body>
+</html>
+<!--
+25800 Carlos Bee Blvd, Hayward, CA 94542
+25555 Hesperian Blvd, Hayward, CA 94545
+43600 Mission Blvd, Fremont, CA 94539
+21250 Stevens Creek Blvd, Cupertino, CA 95014
+3095 Yerba Buena Rd, San Jose, CA 95135
+3000 Mission College Blvd, Santa Clara, CA 95054
+450 Serra Mall, Stanford, CA 94305
+2100 Moorpark Ave, San Jose, CA 95128
+1 Washington Sq, San Jose, CA 95192
+-->
