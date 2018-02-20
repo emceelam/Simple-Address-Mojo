@@ -2,14 +2,14 @@
 <html lang="en">
   <head>
     <title>Simple Address App</title>
-    <meta charset=utf-8 />    
-    <meta name="viewport" 
+    <meta charset=utf-8 />
+    <meta name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" type="text/css" media="screen" href="css/master.css" />
     <link rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous">
     <style>
       #gmap {
@@ -100,17 +100,15 @@
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
       integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
       crossorigin="anonymous"></script>
-    <script 
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" 
-      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" 
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
       crossorigin="anonymous"></script>
     <script
-      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" 
-      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" 
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"></script>
-    
     <script>
-
       class AjaxAddress {
         promise_get_all () {
           return new Promise( (resolve) => {
@@ -174,8 +172,7 @@
             });
           });
         }
- 
- 
+
         promise_geocode (address) {
           street = encodeURI(address["street"]);
           city   = encodeURI(address["city"]);
@@ -198,8 +195,7 @@
           );
         }
       }
-      
-      
+
       class ListAddresses  {
         constructor () {
           this.id_to_address = {};
@@ -227,7 +223,7 @@
             }
           );
         }
-        
+
         append (address) {
           var id = address["id"];
 
@@ -304,7 +300,7 @@
           addr_data.city   = $("#city"  ).val();
           addr_data.state  = $("#state" ).val();
           addr_data.zip    = $("#zip"   ).val();
-          
+
           this.ajax_address.promise_post(addr_data).then( (address) => {
             console.log("post successful");
             console.log(address);
@@ -332,7 +328,7 @@
             this_obj.add_marker(id, address);
           });
         }
-        
+
         add_marker (id, address) {
           if (address["lat"] || address["lng"]) {
             address_map.add_marker(id, address);
@@ -369,7 +365,7 @@
           ${city}, ${state} ${zip}
         `;
       }
-      
+
       class AddressMap {
         constructor() {
           this.id_to_marker = {};
@@ -390,7 +386,7 @@
           var lng    = address["lng"   ];
           console.log("add_marker");
           console.log(address);
-          
+
           var marker = new google.maps.Marker({
             title     : street,
             position  : {'lat': lat, 'lng': lng},
@@ -417,7 +413,7 @@
       $(document).ready(function() {
         list_addresses = new ListAddresses;
         list_addresses.refresh();
-        
+
         $("#new_address").click(function() {
           $("#address_title").text("New Address");
           //$("#form_modal").data("newness",1);
@@ -433,7 +429,7 @@
             //$("form_modal").close();
           });
         });
-        
+
         $("#button1").click(function() {
           /*
         $.ajax({
@@ -454,7 +450,6 @@
               console.log(lat_lng);
               var marker = new google.maps.Marker({
                 position: lat_lng,
-                
               });
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -464,10 +459,9 @@
             }
           });
         });
-        
       });
     </script>
-    <script async defer 
+    <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=<: $api_key :>&callback=initMap"
       type="text/javascript">
     </script>
