@@ -1,4 +1,5 @@
 package SimpleAddressMojo;
+
 use Mojo::Base 'Mojolicious';
 use Mojo::Util qw(url_escape);
 use DBI;
@@ -6,6 +7,8 @@ use List::MoreUtils qw(mesh zip);
 use LWP::Simple qw(get);
 use JSON qw(decode_json);
 use File::Slurp qw(read_file);
+use File::Basename qw(dirname);
+use Cwd qw(abs_path);
 use Data::Dumper;
 
 # This method will run once at server start
@@ -62,8 +65,6 @@ sub startup {
   });
   
   $r->post('/api/addresses' => sub {
-    print "post command received\n";
-
     my $c = shift;
     my %address;
     my $req_json = $c->req->json;
@@ -94,10 +95,8 @@ sub startup {
     $sth->execute(@address{qw/street city state zip/});
     $id = $dbh->last_insert_id("", "", "", "");
     $address{id} = $id;
-    print Dumper \%address;
     $c->render(json => \%address, status => '201');
   });
-  
 
   $r->cors('/api/addresses/:id')->to(
     'cors.origin'      => '*',
@@ -109,7 +108,6 @@ sub startup {
   $r->put('/api/addresses/:id' => sub {
     my $c = shift;
     my $id = $c->param('id');
-    print "put id: $id\n";
 
     my %address;
     my $req_json = $c->req->json;
@@ -117,8 +115,6 @@ sub startup {
     $address{id} = $id;
     $address{lat} = undef;
     $address{lng} = undef;
-    print "req_json: " . Dumper $req_json;
-    print "address: " . Dumper \%address;
 
     my $sth = $dbh->prepare("
       UPDATE addresses
@@ -156,7 +152,6 @@ sub startup {
   $r->get('/api/geocode' => sub {
     my $c = shift;
     my %address;  
-    print "/api/geocode\n";
 
     @address{qw/street city state zip/} = (
       $c->param('street') || '',
@@ -188,7 +183,6 @@ sub startup {
       return;
     }
     my $lat_lng = get_lat_lng(\%address);
-    print "/api/geocode" . Dumper \%address;
     if (!defined $lat_lng) {
       $c->render(
         json   => {
@@ -204,14 +198,19 @@ sub startup {
 }
 
 sub get_dbh {
-  state $dbh = DBI->connect ("dbi:SQLite:dbname=address.db", "", "")
-    or die "SQLite connect fails";
+  state $dbh;
+
+  if (!$dbh) {
+    my $dir = dirname(abs_path($0));
+    $dbh = DBI->connect ("dbi:SQLite:dbname=$dir/address.db", "", "")
+      or die "SQLite connect fails";
+  }
+  return $dbh;
 }
 
 sub get_lat_lng {
   my $address = shift;
   
-  print "get_lat_lng()\n";
   my $dbh = get_dbh();
   my $sth;
   $sth = $dbh->prepare("
