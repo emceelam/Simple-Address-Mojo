@@ -283,7 +283,6 @@
           $("#zip"   ).val(address["zip"   ]);
 
           $("#address_title").text("Edit Address");
-          //$("#form_modal").data("newness",0);
           $("#form_modal").modal("show");
           $("#save_address").off().click(function () {
             this_obj.put_address(id);
@@ -428,7 +427,6 @@
 
         $("#new_address").click(function() {
           $("#address_title").text("New Address");
-          //$("#form_modal").data("newness",1);
 
           // reset form values
           $("#street").val('');
