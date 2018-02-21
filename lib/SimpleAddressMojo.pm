@@ -34,6 +34,11 @@ sub startup {
   # Router
   my $r = $self->routes;
 
+  $r->get('/' => sub {
+    my $c = shift;
+    $c->redirect_to('/address_app.html');
+  });
+
   $r->cors('/api/addresses')->to(
     'cors.origin'      => '*',
     'cors.credentials' => 1,
