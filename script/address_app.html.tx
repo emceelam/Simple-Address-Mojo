@@ -254,6 +254,14 @@
           $(`#delete_${id}`).click(function() {
             this_obj.delete_address(id);
           });
+          $(`#address_${id}`).hover(
+            function(evt) {
+              address_map.pop_marker(id);
+            },
+            function(evt) {
+              address_map.unpop_marker(id);
+            }
+          );
         }
 
         delete_address (id) {
@@ -360,6 +368,7 @@
       class AddressMap {
         constructor() {
           this.id_to_marker = {};
+          this.id_to_popup = {};
           this.map = null;
         }
         init() {
@@ -388,6 +397,22 @@
           var marker = this.id_to_marker[id];
           marker.setMap(null);
           delete this.id_to_marker[id];
+        }
+        pop_marker(id) {
+          var marker = this.id_to_marker[id];
+          if (!marker) {   // marker not yet initialized
+            return;
+          }
+
+          marker.setLabel("A"+id);
+        }
+        unpop_marker(id) {
+          var marker = this.id_to_marker[id];
+          if (!marker) {   // marker not yet initialized
+            return;
+          }
+
+          marker.setLabel(null);
         }
       }
       address_map = null;
