@@ -4,19 +4,25 @@ Simple Adddress App
 
 # SYNOPSIS
 
-Install prerequisites
-
-    sudo cpanm Mojolicious File::Slurp JSON
-
 Run REST server
 
-    cd script
-    make
-    ./simple_address_mojo daemon
+    ./script/simple_address_mojo daemon
 
 From web browser
 
     http://localhost:3000/address_app.html
+
+# INSTALL
+
+    sudo cpanm \
+      Mojolicious \
+      File::Slurp \
+      JSON \
+      DBD::SQLite \
+      Text::Xslate \
+      Mojolicious::Plugin::SecureCORS
+    cd script
+    make
 
 # DESCRIPTION
 
