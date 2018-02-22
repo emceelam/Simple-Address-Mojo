@@ -6,6 +6,7 @@ all: address_app.html address.db
 
 address_app.html: xslate.pl address_app.html.tx
 	./xslate.pl > $@
+	mkdir -p ../public
 	cp address_app.html ../public/$@
 
 address.db:
