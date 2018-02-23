@@ -106,7 +106,7 @@
           return new Promise( (resolve) => {
             $.ajax({
               type: "GET",
-              url: "http://127.0.0.1:3000/api/addresses",
+              url: "http://<: $host_port :>/api/addresses",
               success: resolve,
               error: this.reject
             });
@@ -116,7 +116,7 @@
           return new Promise ( (resolve) => {
             $.ajax({
               type: "DELETE",
-              url: `http://127.0.0.1:3000/api/addresses/${id}`,
+              url: `http://<: $host_port :>/api/addresses/${id}`,
               xhrFields: {
                 withCredentials: true
               },
@@ -129,7 +129,7 @@
           return new Promise ( (resolve) => {
             $.ajax({
               type: "POST",
-              url: "http://127.0.0.1:3000/api/addresses",
+              url: "http://<: $host_port :>/api/addresses",
               xhrFields: {
                 withCredentials: true
               },
@@ -148,7 +148,7 @@
           return new Promise ( (resolve) => {
             $.ajax({
               type: "PUT",
-              url: `http://127.0.0.1:3000/api/addresses/${id}`,
+              url: `http://<: $host_port :>/api/addresses/${id}`,
               xhrFields: {
                 withCredentials: true
               },
@@ -171,7 +171,7 @@
           return new Promise ( (resolve) => {
             $.ajax({
               type: "GET",
-              url: `http://127.0.0.1:3000/api/geocode?street=${street}&city=${city}&state=${state}&zip=${zip}`,
+              url: `http://<: $host_port :>/api/geocode?street=${street}&city=${city}&state=${state}&zip=${zip}`,
               success: resolve,
               error: this.reject
             });

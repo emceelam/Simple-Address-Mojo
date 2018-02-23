@@ -14,6 +14,8 @@ From web browser
 
 # INSTALL
 
+Open terminal
+
     sudo cpanm \
       Mojolicious \
       File::Slurp \
@@ -23,6 +25,15 @@ From web browser
       Mojolicious::Plugin::SecureCORS
     cd script
     make
+
+Get a [Google Map API key](https://developers.google.com/maps/documentation/javascript/get-api-key).
+
+    vi address_app.conf    # Add your API key.
+
+Now run it
+
+    ./simple_address_mojo daemon
+
 
 # DESCRIPTION
 
