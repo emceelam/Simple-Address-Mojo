@@ -5,7 +5,7 @@ use Mojo::Util qw(url_escape);
 use DBI;
 use List::MoreUtils qw(mesh zip);
 use LWP::Simple qw(get);
-use JSON;
+use JSON qw(decode_json);
 use File::Slurp qw(read_file);
 use File::Basename qw(dirname);
 use Cwd qw(abs_path);
@@ -217,7 +217,9 @@ sub get_gmap_api_key {
 
   if (!$gmap_api_key) {
     my $dir = get_script_dir();
-    my $conf = decode_json(read_file ("$dir/address_app.conf"));
+    my $conf = JSON->new->relaxed(1)->decode(scalar read_file (
+      "$dir/address_app.conf"
+    ));
     $gmap_api_key = $conf->{server_gmap_api_key}
       || die "missing server_gmap_api_key";
   }
@@ -254,7 +256,7 @@ sub get_lat_lng {
   my $gmap_api_key = get_gmap_api_key();
   my $url = "https://maps.googleapis.com/maps/api/geocode/json?address=$address_string&key=$gmap_api_key";
   my $res = LWP::Simple::get($url);
-  my $geocoded = JSON->new->relaxed(1)->decode($res);
+  my $geocoded = decode_json($res);
   my $lat_lng = $geocoded->{results}[0]{geometry}{location};
   if (!$lat_lng) {
     print "geocode fails: " . Dumper $res;
