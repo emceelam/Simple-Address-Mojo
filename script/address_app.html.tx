@@ -187,9 +187,10 @@
       }
 
       class ListAddresses  {
-        constructor () {
+        constructor (address_map) {
           this.id_to_address = {};
           this.ajax_address = new AjaxAddress();
+          this.address_map = address_map;
         }
         refresh() {
           var this_obj = this;
@@ -246,6 +247,7 @@
           );
 
           var this_obj = this;
+          var address_map = this.address_map;
           $(`#edit_${id}`).click(function() {
             this_obj.edit_address(id);
           });
@@ -264,6 +266,7 @@
 
         delete_address (id) {
           var this_obj = this;
+          var address_map = this.address_map;
           this.ajax_address.promise_delete(id).then(function () {
             $(`#address_${id}`).remove();
             delete this_obj.id_to_address[id];
@@ -322,6 +325,7 @@
         }
 
         add_marker (id, address) {
+          var address_map = this.address_map;
           if (address["lat"] || address["lng"]) {
             setTimeout(
               function() {
@@ -340,8 +344,9 @@
             },
           );
         }
+
         delete_marker (id) {
-          address_map.delete_marker(id);
+          this.address_map.delete_marker(id);
         }
       };
 
@@ -412,15 +417,12 @@
           marker.setLabel(null);
         }
       }
-      address_map = null;
 
       function initMap() {
-        address_map = new AddressMap;
+        var address_map = new AddressMap;
         address_map.init();
-      }
 
-      $(document).ready(function() {
-        list_addresses = new ListAddresses;
+        list_addresses = new ListAddresses(address_map);
         list_addresses.refresh();
 
         $("#new_address").click(function() {
@@ -437,7 +439,7 @@
             //$("form_modal").close();
           });
         });
-      });
+      }
     </script>
     <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=<: $api_key :>&callback=initMap"
