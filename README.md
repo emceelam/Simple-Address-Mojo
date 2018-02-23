@@ -36,7 +36,10 @@ Open terminal
 
     vi address_app.conf
       # Add API key(s)
-      # Set hostname if needed
+      # Set hostname if public web server
+
+    make
+      # uses modified address_app.conf to regenerate files
 
 Now run it
 
