@@ -5,12 +5,11 @@ use Mojo::Util qw(url_escape);
 use DBI;
 use List::MoreUtils qw(mesh zip);
 use LWP::Simple qw(get);
-use Mojo::JSON qw(decode_json);
+use JSON;
 use File::Slurp qw(read_file);
 use File::Basename qw(dirname);
 use Cwd qw(abs_path);
 use Data::Dumper;
-
 
 # This method will run once at server start
 sub startup {
@@ -208,17 +207,19 @@ sub get_dbh {
   if (!$dbh) {
     my $dir = get_script_dir();
     $dbh = DBI->connect ("dbi:SQLite:dbname=$dir/address.db", "", "")
-      or die "SQLite connect fails";
+      || die "SQLite connect fails";
   }
   return $dbh;
 }
 
 sub get_gmap_api_key {
   state $gmap_api_key;
+
   if (!$gmap_api_key) {
     my $dir = get_script_dir();
     my $conf = decode_json(read_file ("$dir/address_app.conf"));
-    $gmap_api_key = $conf->{api_key};
+    $gmap_api_key = $conf->{server_gmap_api_key}
+      || die "missing server_gmap_api_key";
   }
 
   return $gmap_api_key;
@@ -253,7 +254,7 @@ sub get_lat_lng {
   my $gmap_api_key = get_gmap_api_key();
   my $url = "https://maps.googleapis.com/maps/api/geocode/json?address=$address_string&key=$gmap_api_key";
   my $res = LWP::Simple::get($url);
-  my $geocoded = decode_json($res);
+  my $geocoded = JSON->new->relaxed(1)->decode($res);
   my $lat_lng = $geocoded->{results}[0]{geometry}{location};
   if (!$lat_lng) {
     print "geocode fails: " . Dumper $res;

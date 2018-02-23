@@ -6,7 +6,7 @@ all: address_app.html address.db address_app.conf
 
 address_app.conf: address_app.conf.example
 	cp $< $@
-	@echo "* Don't forget to add your Google Map API key to "$@
+	@echo "* Don't forget to add your Google Map API key(s) to "$@
 
 address_app.html: xslate.pl address_app.html.tx address_app.conf
 	./xslate.pl > $@
