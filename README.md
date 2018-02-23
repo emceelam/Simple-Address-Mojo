@@ -2,6 +2,10 @@
 
 Simple Adddress App
 
+# DESCRIPTION
+
+This is a simple address app, utilizing Google Maps, AJAX, and REST. The REST side is coded with Perl Mojolicious.
+
 # SYNOPSIS
 
 Run REST server
@@ -45,10 +49,6 @@ Now run it
 
     ./simple_address_mojo daemon
 
-
-# DESCRIPTION
-
-This is a simple address app, utilizing Google Maps, AJAX, and REST. The REST side is coded with Perl Mojolicious.
 
 # AUTHOR
 
