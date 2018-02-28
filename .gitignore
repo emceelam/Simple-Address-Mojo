@@ -1,6 +1,7 @@
 script/address.db
 address_app.conf.json
 node_modules
+package-lock.json
 public/bundle.js
 public/address_app.html
 public/README.html
