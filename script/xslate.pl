@@ -11,7 +11,7 @@ my $tx = Text::Xslate->new(
   syntax => 'Kolon',
   type => 'html',   # html escaping
 );
-my $conf = JSON->new->relaxed(1)->decode( scalar read_file ('address_app.conf'));
+my $conf = JSON->new->relaxed(1)->decode( scalar read_file ('address_app.conf.json'));
 my $api_key = $conf->{browser_gmap_api_key} || die "missing browser_gmap_api_key";
 my $host    = $conf->{host} || die "missing host";
 my $port    = $conf->{port} || die "missing port";

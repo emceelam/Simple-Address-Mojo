@@ -218,7 +218,7 @@ sub get_gmap_api_key {
   if (!$gmap_api_key) {
     my $dir = get_script_dir();
     my $conf = JSON->new->relaxed(1)->decode(scalar read_file (
-      "$dir/address_app.conf"
+      "$dir/address_app.conf.json"
     ));
     $gmap_api_key = $conf->{server_gmap_api_key}
       || die "missing server_gmap_api_key";

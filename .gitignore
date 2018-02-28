@@ -1,5 +1,4 @@
 script/address.db
 script/address_app.html
-script/address_app.conf
-public/address_app.html
+script/address_app.conf.json
 public/README.html

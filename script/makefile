@@ -2,9 +2,9 @@
 # $<  first dependency 
 # $^  all dependencies
 
-all: ../public/address_app.html address.db address_app.conf
+all: ../public/address_app.html address.db address_app.conf.json
 
-address_app.conf: address_app.conf.example
+address_app.conf.json: address_app.conf.example
 	cp $< $@
 	@echo "* Don't forget to add your Google Map API key(s) to "$@
 
