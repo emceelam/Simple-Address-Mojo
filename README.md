@@ -36,7 +36,6 @@ Open terminal
       Text::Xslate \
       Mojolicious::Plugin::SecureCORS
 
-    cd script
     make
 
     vi address_app.conf.json
