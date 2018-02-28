@@ -26,6 +26,8 @@ If you are running on a localhost, you can use a single API key for both browser
 
 # INSTALL
 
+Recent version of [Node.js](https://nodejs.org/en/download/package-manager/) is required.
+
 Open terminal
 
     sudo cpanm \
