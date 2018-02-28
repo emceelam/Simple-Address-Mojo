@@ -49,8 +49,11 @@ Open terminal
 
 Now run it
 
-    ./simple_address_mojo daemon
+    ./script/simple_address_mojo daemon
 
+Open web browser
+
+    http://localhost:3000/address_app.html
 
 # AUTHOR
 
