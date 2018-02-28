@@ -1,6 +1,6 @@
 script/address.db
-script/address_app.conf.json
-script/node_modules
+address_app.conf.json
+node_modules
 public/bundle.js
 public/address_app.html
 public/README.html

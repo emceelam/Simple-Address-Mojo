@@ -201,6 +201,10 @@ sub get_script_dir {
   state $dir || dirname(abs_path($0));
 }
 
+sub get_conf_dir {
+  state $dir || dirname(abs_path("$0/.."));  # directory above this file
+}
+
 sub get_dbh {
   state $dbh;
 
@@ -216,7 +220,7 @@ sub get_gmap_api_key {
   state $gmap_api_key;
 
   if (!$gmap_api_key) {
-    my $dir = get_script_dir();
+    my $dir = get_conf_dir();
     my $conf = JSON->new->relaxed(1)->decode(scalar read_file (
       "$dir/address_app.conf.json"
     ));
