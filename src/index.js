@@ -5,7 +5,7 @@ export function initMap() {
   var address_map = new AddressMap;
   address_map.init();
 
-  list_addresses = new ListAddresses(address_map);
+  var list_addresses = new ListAddresses(address_map);
   list_addresses.refresh();
 
   $("#new_address").click(function() {
@@ -27,3 +27,4 @@ export function initMap() {
 
 // google map requires that initMap be globally available
 window.initMap = initMap;
+
