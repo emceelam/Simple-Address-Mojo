@@ -2,16 +2,15 @@
 # $<  first dependency 
 # $^  all dependencies
 
-all: address_app.html address.db address_app.conf
+all: ../public/address_app.html address.db address_app.conf
 
 address_app.conf: address_app.conf.example
 	cp $< $@
 	@echo "* Don't forget to add your Google Map API key(s) to "$@
 
-address_app.html: xslate.pl address_app.html.tx address_app.conf
-	./xslate.pl > $@
+../public/address_app.html: xslate.pl address_app.html.tx address_app.conf
 	mkdir -p ../public
-	cp address_app.html ../public/$@
+	./xslate.pl > $@
 
 address.db:
 	sqlite3 $@ < create.sql
