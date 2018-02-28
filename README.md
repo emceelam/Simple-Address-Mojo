@@ -35,10 +35,11 @@ Open terminal
       DBD::SQLite \
       Text::Xslate \
       Mojolicious::Plugin::SecureCORS
+
     cd script
     make
 
-    vi address_app.conf
+    vi address_app.conf.json
       # Add API key(s)
       # Set hostname if public web server
 
