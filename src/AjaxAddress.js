@@ -64,10 +64,10 @@ export default class AjaxAddresses {
   }
 
   promise_geocode (address) {
-    street = encodeURI(address["street"]);
-    city   = encodeURI(address["city"]);
-    state  = encodeURI(address["state"]);
-    zip    = encodeURI(address["zip"]);
+    var street = encodeURI(address["street"]);
+    var city   = encodeURI(address["city"]);
+    var state  = encodeURI(address["state"]);
+    var zip    = encodeURI(address["zip"]);
     return new Promise ( (resolve) => {
       $.ajax({
         type: "GET",
