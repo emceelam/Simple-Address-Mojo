@@ -10,7 +10,7 @@ This is a simple address app, utilizing Google Maps, AJAX, and REST. The REST si
 
 Run REST server
 
-    ./script/simple_address_mojo daemon
+    ./script/simple_address_mojo prefork
 
 From web browser
 
@@ -49,7 +49,7 @@ Open terminal
 
 Now run it
 
-    ./script/simple_address_mojo daemon
+    ./script/simple_address_mojo prefork
 
 Open web browser
 
