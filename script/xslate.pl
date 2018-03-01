@@ -13,7 +13,7 @@ use File::Basename qw(dirname);
 my $script_path = dirname(abs_path($0));
 chdir ($script_path);
 
-# real work begins
+# process address_app.html.tx into address_app.html
 my $tx = Text::Xslate->new(
   suffix => '.html.tx',
   syntax => 'Kolon',
