@@ -16,6 +16,12 @@ sub startup {
   my $self = shift;
   my $dbh = get_dbh();
 
+  if (-e "/tmp/prefork.pid") {
+    my $pid = read_file ("/tmp/prefork.pid");
+    chomp $pid;
+    exit (0) if -e "/proc/$pid";
+  }
+
   $self->secrets(['Mojo secret text here.']);
   $self->helper(dbh => sub { $dbh });
 
