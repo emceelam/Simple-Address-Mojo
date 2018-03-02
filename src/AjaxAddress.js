@@ -55,6 +55,7 @@ export default class AjaxAddresses {
   }
   promise_put (address) {
     var id = address["id"];
+    delete address["id"];
     return new Promise ( (resolve) => {
       $.ajax({
         type: "PUT",
