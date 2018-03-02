@@ -10,7 +10,17 @@ export default class AjaxAddresses {
         success: resolve,
         error: this.reject
       });
-    })
+    });
+  }
+  promise_get_one (id) {
+    return new Promise( (resolve) => {
+      $.ajax({
+        type: "GET",
+        url: `http://${Conf.host}:${Conf.port}/api/addresses/${id}`,
+        success: resolve,
+        error: this.reject
+      });
+    });
   }
   promise_delete (id) {
     return new Promise ( (resolve) => {
