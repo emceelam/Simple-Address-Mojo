@@ -69,13 +69,13 @@ sub startup {
     my @rows_hash = map { { mesh ( @fields, @$_ ) } } @$rows;
     $c->render(json => \@rows_hash);
   });
-  
+
   $r->post('/api/addresses' => sub {
     my $c = shift;
     my %address;
     my $req_json = $c->req->json;
     @address{qw/street city state zip/} = @{$req_json}{qw/street city state zip/};
-    
+
     my $id;
     my $sth;
     $sth = $dbh->prepare("
@@ -93,7 +93,7 @@ sub startup {
       $c->render(json => \%address, status => '200');
       return;
     }
-    
+
     $sth = $dbh->prepare("
       INSERT INTO addresses (street, city, state, zip) 
         VALUES (?,?,?,?)
@@ -110,7 +110,7 @@ sub startup {
     'cors.methods'     => 'GET, PUT, DELETE',    
     'cors.headers'     => 'Content-Type',
   );
-  
+
   $r->put('/api/addresses/:id' => sub {
     my $c = shift;
     my $id = $c->param('id');
@@ -128,9 +128,11 @@ sub startup {
         WHERE id=?
     ");
     $sth->execute(@address{qw/street city state zip lat lng id/});
+    delete $address{lat};
+    delete $address{lng};
     $c->render(json => \%address, status => '202');
   });
-  
+
   $r->get('/api/addresses/:id' => sub {
     my $c = shift;
     my $id = $c->param('id');
