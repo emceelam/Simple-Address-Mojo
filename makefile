@@ -20,6 +20,8 @@ public/bundle.js: webpack.config.js address_app.conf.json src/index.js src/Addre
 
 script/address.db:
 	sqlite3 $@ < script/create.sql
+	chgrp webteam $@
+	chmod g+w $@
 
 clean:
 	rm script/address.db
