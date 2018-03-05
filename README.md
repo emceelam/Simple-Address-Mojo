@@ -4,7 +4,7 @@ Simple Adddress App
 
 # DESCRIPTION
 
-This is a simple address app, utilizing Google Maps, AJAX, and REST. The REST side is coded with Perl Mojolicious.
+This is the REST side of a simple address app, utilizing Google Maps. The REST side is coded with Mojolicious.
 
 # SYNOPSIS
 
@@ -12,21 +12,16 @@ Run REST server
 
     ./script/simple_address_mojo prefork
 
-From web browser
 
-    http://localhost:3000/address_app.html
-
-# Getting a Google Map API KEY
+# GETTING A GOOGLE MAP API KEY
 
 Get a [Google Map API key](https://developers.google.com/maps/documentation/javascript/get-api-key).
 
-If you are running on a public web server, you need two Google Map API keys, one for browser, another for server. For the browser, generate an API key and set Key Restriction to "HTTP referrers". For the server, generate an API key and set Key Restriction to "IP Addresses"
+If you are running on a public web server, you need a google map API key with Key Restriction set to "IP Addresses"
 
-If you are running on a localhost, you can use a single API key for both browser and server. When you generate your API key, set Key restriction to "None".
+If you are running on a localhost, you can generate your API key, and set Key restriction to "None".
 
 # INSTALL
-
-Recent version of [Node.js](https://nodejs.org/en/download/package-manager/) is required.
 
 Open terminal
 
@@ -35,25 +30,18 @@ Open terminal
       File::Slurp \
       JSON \
       DBD::SQLite \
-      Text::Xslate \
       Mojolicious::Plugin::SecureCORS
 
     make
 
     vi address_app.conf.json
       # Add API key(s)
-      # Set hostname if public web server
-
-    make
-      # uses modified address_app.conf to regenerate files
 
 Now run it
 
     ./script/simple_address_mojo prefork
 
-Open web browser
-
-    http://localhost:3000/address_app.html
+Connect to the REST server with the [client](https://github.com/emceelam/Simple-Address-Client)
 
 # AUTHOR
 
