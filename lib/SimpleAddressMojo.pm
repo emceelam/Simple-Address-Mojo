@@ -39,7 +39,7 @@ sub startup {
     'cors.methods'     => 'GET, POST, PUT, DELETE',
     'cors.headers'     => 'Content-Type',
   );
-  
+
   # Router
   my $r = $self->routes;
 
@@ -137,7 +137,7 @@ sub startup {
     my $c = shift;
     my $id = $c->param('id');
     my $sth = $dbh->prepare("
-      SELECT id, street, city, state, zip
+      SELECT id, street, city, state, zip, lat, lng
         FROM addresses
         WHERE id=?
     ");
@@ -157,40 +157,36 @@ sub startup {
     $c->render(text => 'deleted', status => '204');
   });
   
-  $r->get('/api/geocode' => sub {
+  $r->get('/api/addresses/:id/geocode' => sub {
     my $c = shift;
-    my %address;  
+    my $id = $c->param('id');
+    my $sth = $dbh->prepare("
+      SELECT lat, lng, city, street, state, zip
+        FROM addresses
+        WHERE id=?
+    ");
+    $sth->execute($id);
+    my $addr = $sth->fetchrow_hashref();
 
-    @address{qw/street city state zip/} = (
-      $c->param('street') || '',
-      $c->param('city'  ) || '',
-      $c->param('state' ) || '',
-      $c->param('zip'   ) || '',
-    );
-    my %errors;
-    foreach my $k (keys %address) {
-      $address{$k} =~ s{^\s+(.+?)\s+}{$1};
-      if (!length($address{$k})) {
-        $errors{$k} = "$k is empty";
-      }
-    }
-    if ($address{zip} =~ m{\D}) {
-      $errors{zip} = "zip must be entirely numbers";
-    }
-    if (%errors) {
+    # address_id not found
+    if (!defined $addr) {
       $c->render(
         json => {
-          status  => 400,
-          message => "Validation failed",
-          errors  => [
-            map {  { field => $_, message => $errors{$_} } } keys %errors
-          ],
+          status  => 404,
+          message => $sth->err,
         },
-        status => 400,
+        status => 404,  # NOT FOUND
       );
       return;
     }
-    my $lat_lng = get_lat_lng(\%address);
+
+    # lat and lng already in database
+    if (defined $addr->{lat} && defined $addr->{lng} ) {
+      $c->render(json => $addr);
+      return;
+    }
+
+    my $lat_lng = get_lat_lng($addr);
     if (!defined $lat_lng) {
       $c->render(
         json   => {
@@ -201,7 +197,9 @@ sub startup {
       );
       return;
     }
-    $c->render(json => $lat_lng);
+    $addr->{lat} = $lat_lng->{lat};
+    $addr->{lng} = $lat_lng->{lng};
+    $c->render(json => $addr);
   });
 }
 
@@ -284,5 +282,6 @@ sub get_lat_lng {
 
   return $lat_lng;
 }
+
 
 1;
