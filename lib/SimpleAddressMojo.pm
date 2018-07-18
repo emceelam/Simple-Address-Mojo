@@ -203,12 +203,16 @@ sub startup {
   });
 }
 
+sub get_base_dir {
+  state $dir || abs_path( dirname(__FILE__) . "/.." );  # directory above
+}
+
 sub get_script_dir {
-  state $dir || dirname(abs_path($0));
+  return get_base_dir() . "/script";
 }
 
 sub get_conf_dir {
-  state $dir || dirname(abs_path("$0/.."));  # directory above this file
+  return get_base_dir();
 }
 
 sub get_dbh {
