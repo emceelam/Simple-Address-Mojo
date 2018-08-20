@@ -75,6 +75,17 @@ sub startup {
     my %address;
     my $req_json = $c->req->json;
     @address{qw/street city state zip/} = @{$req_json}{qw/street city state zip/};
+    my @missing = grep { !defined $address{$_} } keys %address;
+    if (@missing) {
+      $c->render(
+        json => {
+          status  => 404,
+          message => ("missing query parameters: " . join(',', @missing)),
+        },
+        status => 404,  # NOT FOUND
+      );
+      return;
+    }
 
     my $id;
     my $sth;
