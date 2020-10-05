@@ -27,10 +27,11 @@ Open terminal
 
     sudo cpanm \
       Mojolicious \
+      Mojolicious::Plugin::SecureCORS \
       File::Slurp \
       JSON \
       DBD::SQLite \
-      Mojolicious::Plugin::SecureCORS
+      LWP::Simple
 
     make
 
