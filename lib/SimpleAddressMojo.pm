@@ -25,13 +25,10 @@ sub startup {
   $self->secrets(['Mojo secret text here.']);
   $self->helper(dbh => sub { $dbh });
 
-  # Documentation browser under "/perldoc"
-  $self->plugin('PODRenderer');
-
   # CORS
   $self->plugin('SecureCORS');
   $self->plugin('SecureCORS', { max_age => undef });
-  
+
   # set app-wide CORS defaults
   $self->routes->to(
     'cors.origin'      => '*',
@@ -106,7 +103,7 @@ sub startup {
     }
 
     $sth = $dbh->prepare("
-      INSERT INTO addresses (street, city, state, zip) 
+      INSERT INTO addresses (street, city, state, zip)
         VALUES (?,?,?,?)
     ");
     $sth->execute(@address{qw/street city state zip/});
@@ -118,7 +115,7 @@ sub startup {
   $r->cors('/api/addresses/:id')->to(
     'cors.origin'      => '*',
     'cors.credentials' => 1,
-    'cors.methods'     => 'GET, PUT, DELETE',    
+    'cors.methods'     => 'GET, PUT, DELETE',
     'cors.headers'     => 'Content-Type',
   );
 
@@ -129,18 +126,15 @@ sub startup {
     my %address;
     my $req_json = $c->req->json;
     @address{qw/street city state zip/} = @{$req_json}{qw/street city state zip/};
-    $address{id} = $id;
-    $address{lat} = undef;
-    $address{lng} = undef;
 
     my $sth = $dbh->prepare("
       UPDATE addresses
         SET street=?, city=?, state=?, zip=?, lat=?, lng=?
         WHERE id=?
     ");
-    $sth->execute(@address{qw/street city state zip lat lng id/});
-    delete $address{lat};
-    delete $address{lng};
+    $sth->execute(@address{qw/street city state zip/}, undef, undef, $id);
+
+    $address{id} = $id;
     $c->render(json => \%address, status => '202');
   });
 
@@ -156,7 +150,7 @@ sub startup {
     my $row = $sth->fetchrow_hashref();
     $c->render(json => $row);
   });
-  
+
   $r->delete('/api/addresses/:id' => sub {
     my $c = shift;
     my $id = $c->param('id');
@@ -167,7 +161,7 @@ sub startup {
     $sth->execute($id);
     $c->render(text => 'deleted', status => '204');
   });
-  
+
   $r->get('/api/addresses/:id/geocode' => sub {
     my $c = shift;
     my $id = $c->param('id');
@@ -254,7 +248,7 @@ sub get_gmap_api_key {
 
 sub get_lat_lng {
   my $address = shift;
-  
+
   my $dbh = get_dbh();
   my $sth;
   $sth = $dbh->prepare("
@@ -271,11 +265,11 @@ sub get_lat_lng {
     print "get_lat_lng() address missing an id\n";
     return undef;
   }
-  
+
   if ($lat || $lng) {
     return {lat => $lat, lng => $lng};
   }
-  
+
   my ($street, $city, $state, $zip) = @$address{qw/street city state zip/};
   my $address_string = url_escape ("$street, $city, $state, $zip");
   my $gmap_api_key = get_gmap_api_key();
@@ -289,7 +283,7 @@ sub get_lat_lng {
   }
 
   $sth = $dbh->prepare("
-    UPDATE addresses 
+    UPDATE addresses
       SET lat=?, lng=?
       WHERE id=?
   ");
