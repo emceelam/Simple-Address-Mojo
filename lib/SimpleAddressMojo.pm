@@ -7,8 +7,7 @@ use List::MoreUtils qw(mesh zip);
 use LWP::Simple qw(get);
 use JSON qw(decode_json);
 use File::Slurp qw(read_file);
-use File::Basename qw(dirname);
-use Cwd qw(abs_path);
+use FindBin;
 use Data::Dumper;
 
 # This method will run once at server start
@@ -39,12 +38,6 @@ sub startup {
 
   # Router
   my $r = $self->routes;
-
-  # Web page
-  $r->get('/' => sub {
-    my $c = shift;
-    $c->redirect_to('/address_app.html');
-  });
 
   # REST API
   $r->cors('/api/addresses')->to(
@@ -209,7 +202,7 @@ sub startup {
 }
 
 sub get_base_dir {
-  state $dir || abs_path( dirname(__FILE__) . "/.." );  # directory above
+  return "$FindBin::Bin/..";  # directory above
 }
 
 sub get_script_dir {
@@ -235,9 +228,9 @@ sub get_gmap_api_key {
   state $gmap_api_key;
 
   if (!$gmap_api_key) {
-    my $dir = get_conf_dir();
+    my $conf_file = get_conf_dir() . "/address_app.conf.json";
     my $conf = JSON->new->relaxed(1)->decode(scalar read_file (
-      "$dir/address_app.conf.json"
+      $conf_file
     ));
     $gmap_api_key = $conf->{server_gmap_api_key}
       || die "missing server_gmap_api_key";
@@ -246,6 +239,8 @@ sub get_gmap_api_key {
   return $gmap_api_key;
 }
 
+# Note: this is intentionally designed so that any geocoding requesting must
+# start with database verification. No database entry, no geocoding. No exception.
 sub get_lat_lng {
   my $address = shift;
 
