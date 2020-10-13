@@ -4,7 +4,7 @@ use Mojo::Base 'Mojolicious';
 use Mojo::Util qw(url_escape);
 use DBI;
 use List::MoreUtils qw(mesh zip);
-use LWP::Simple qw(get);
+use Mojo::UserAgent;
 use JSON qw(decode_json);
 use File::Slurp qw(read_file);
 use FindBin;
@@ -269,8 +269,14 @@ sub get_lat_lng {
   my $address_string = url_escape ("$street, $city, $state, $zip");
   my $gmap_api_key = get_gmap_api_key();
   my $url = "https://maps.googleapis.com/maps/api/geocode/json?address=$address_string&key=$gmap_api_key";
-  my $res = LWP::Simple::get($url);
-  my $geocoded = decode_json($res);
+  my $ua = Mojo::UserAgent->new();
+  my $res = $ua->get($url)->result();
+  if ($res->is_error()) {
+    say $res->message();
+    return undef;
+  }
+  my $body = $res->body();
+  my $geocoded = decode_json($body);
   my $lat_lng = $geocoded->{results}[0]{geometry}{location};
   if (!$lat_lng) {
     print "geocode fails: " . Dumper $res;
