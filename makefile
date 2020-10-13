@@ -1,5 +1,5 @@
 # $@  target
-# $<  first dependency 
+# $<  first dependency
 # $^  all dependencies
 
 all: script/address.db address_app.conf.json
@@ -10,8 +10,6 @@ address_app.conf.json: address_app.conf.example
 
 script/address.db:
 	sqlite3 $@ < script/create.sql
-	chgrp webteam $@
-	chmod g+w $@
 
 clean:
 	rm script/address.db
