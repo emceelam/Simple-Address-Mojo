@@ -25,13 +25,16 @@ If you are running on a localhost, you can generate your API key, and set Key re
 
 Open terminal
 
+    sudo apt install openssl
+
     sudo cpanm \
       Mojolicious \
       Mojolicious::Plugin::SecureCORS \
       File::Slurp \
       JSON \
       DBD::SQLite \
-      LWP::Simple
+      IO::Socket::SSL \
+      Net-SSLeay
 
     make
 
@@ -40,9 +43,16 @@ Open terminal
 
 Now run it
 
+    # not for production use
     ./script/simple_address_mojo prefork
 
+To run under production conditions, use [hypnotoad](https://docs.mojolicious.org/Mojo/Server/Hypnotoad)
+
 Connect to the REST server with the [client](https://github.com/emceelam/Simple-Address-Client)
+
+# DOCKER
+
+[Docker instructions](docker.md)
 
 # AUTHOR
 
